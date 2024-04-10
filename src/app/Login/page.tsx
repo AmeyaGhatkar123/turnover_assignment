@@ -1,0 +1,125 @@
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import Header from "../_components/Header";
+import Offers from "../_components/Offers";
+
+const Login = () => {
+  const [isSignUp, setIsSignUp] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [inputType, setInputType] = useState("password");
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const router = useRouter();
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+    setInputType(showPassword ? "password" : "text");
+  };
+
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+  };
+
+  const handleClick = () => {
+    if (isSignUp) router.push("/Verify");
+  };
+
+  return (
+    <>
+      <Header />
+      <Offers />
+      <div className="mb-20 flex justify-center">
+        <div className="mt-7 w-[40%] rounded-xl border border-solid border-gray-300">
+          <div className="p-5 text-center">
+            <h1 className="text-xl font-bold">
+              {isSignUp ? "Create your account" : "Login"}
+            </h1>
+          </div>
+
+          {isSignUp ? (
+            <div className="my-4 ml-5">
+              <p className="my-1">Name</p>
+              <input
+                className="h-8 w-[95%] rounded-md border border-solid border-gray-300 p-4"
+                type="text"
+                placeholder="Enter"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+          ) : (
+            <div className="text-center">
+              <h1 className="text-lg font-semibold">
+                Welcome back to ECOMMERCE
+              </h1>
+              <p className="text-sm">The next gen business marketplace</p>
+            </div>
+          )}
+
+          <div className="my-4 ml-5">
+            <p className="my-1">Email</p>
+            <input
+              className="h-8 w-[95%] rounded-md border border-solid border-gray-300 p-4"
+              type="text"
+              placeholder="Enter"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="my-4 ml-5">
+            <p className="my-1">Password</p>
+            <input
+              className="h-8 w-[95%] rounded-md border border-solid border-gray-300 p-4"
+              type={inputType}
+              placeholder="Enter"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              onClick={togglePasswordVisibility}
+              className="relative bottom-7 left-[80%] px-2 underline"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+
+          <button
+            onClick={handleClick}
+            className="my-4 ml-5 w-[92%] rounded-md border border-solid border-gray-300 bg-black p-2 text-white"
+          >
+            {isSignUp ? "CREATE ACCOUNT" : "LOGIN"}
+          </button>
+
+          <p className="mb-20 ml-5 mt-4 text-center">
+            {isSignUp ? (
+              <>
+                Have an Account?
+                <span
+                  className="ml-2 cursor-pointer font-semibold"
+                  onClick={toggleSignUp}
+                >
+                  LOGIN
+                </span>
+              </>
+            ) : (
+              <>
+                Don't have an Account?
+                <span
+                  className="ml-2 cursor-pointer font-semibold"
+                  onClick={toggleSignUp}
+                >
+                  SIGN UP
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default Login;
