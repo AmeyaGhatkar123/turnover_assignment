@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 import Header from "./_components/Header";
 import Offers from "./_components/Offers";

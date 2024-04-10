@@ -55,6 +55,14 @@ export const loginHandler = async ({ input }: { input: LoginUserInput }) => {
     }
 
     const secret = process.env.JWT_SECRET;
+
+    if (!secret) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "JWT secret is not defined.",
+      });
+    }
+
     const token = jwt.sign({ sub: user.id }, secret, {
       expiresIn: 60 * 60,
     });
