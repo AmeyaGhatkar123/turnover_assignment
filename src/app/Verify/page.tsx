@@ -1,13 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "../_components/Header";
 import Offers from "../_components/Offers";
 import { useRouter } from "next/navigation";
 
 const Verify = () => {
   const [values, setValues] = useState(["", "", "", "", "", "", "", ""]);
+  const [error, setError] = useState("");
 
   const router = useRouter();
+
+  const inputRefs = Array.from({ length: 8 }, () =>
+    useRef<HTMLInputElement>(null),
+  );
 
   const handleChange = (
     index: number,
@@ -18,12 +23,18 @@ const Verify = () => {
       const newValues = [...values];
       newValues[index] = inputValue;
       setValues(newValues);
+
+      if (index < 7 && inputRefs[index + 1]?.current) {
+        inputRefs[index + 1]?.current?.focus();
+      }
     }
   };
 
   const handleVerify = () => {
     if (values.join("") === "12345678") {
       router.push("/Interests");
+    } else {
+      setError("Incorrect OTP use 12345678");
     }
   };
 
@@ -52,9 +63,12 @@ const Verify = () => {
                   maxLength={1}
                   value={value}
                   onChange={(e) => handleChange(index, e)}
+                  ref={inputRefs[index]}
                 />
               ))}
             </div>
+
+            <p className="text-red-500">{error}</p>
           </div>
 
           <button
