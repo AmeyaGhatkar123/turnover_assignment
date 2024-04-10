@@ -10,39 +10,13 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@index([name])
-}
-
 model User{
-    id        Int      @id @default(autoincrement())
+    id        String   @id @default(uuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    name      String
+    name      String   @db.VarChar(255)
     email     String   @unique
     password  String
-    tokens    Token[]
-}
 
-model Token {
- id         Int       @id @default(autoincrement())
- createdAt  DateTime  @default(now())
- updatedAt  DateTime  @updatedAt
- type       TokenType
- emailToken String?   @unique 
- valid      Boolean   @default(true)
- expiration DateTime
-
- user   User @relation(fields: [userId], references: [id])
- userId Int
-}
-
-enum TokenType {
- EMAIL 
- API
+    @@map(name: "users")
 }

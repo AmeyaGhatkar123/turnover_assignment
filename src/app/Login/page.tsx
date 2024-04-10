@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Header from "../_components/Header";
 import Offers from "../_components/Offers";
+import { trpc } from "~/utils/trpc";
 
 const Login = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -11,6 +12,8 @@ const Login = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
@@ -24,8 +27,41 @@ const Login = () => {
   };
 
   const handleClick = () => {
-    if (isSignUp) router.push("/Verify");
+    if (isSignUp) {
+      const data = { name, email, password };
+      registerFn(data);
+    } else {
+      const data = { email, password };
+      loginFn(data);
+    }
   };
+
+  const { mutate: registerFn } = trpc.registerUser.useMutation({
+    onError(error) {
+      setError(error.message);
+      setName("");
+      setEmail("");
+      setPassword("");
+    },
+
+    onSuccess() {
+      console.log("success");
+      router.push("/Verify");
+    },
+  });
+
+  const { mutate: loginFn } = trpc.loginUser.useMutation({
+    onError(error) {
+      setError(error.message);
+      setEmail("");
+      setPassword("");
+    },
+
+    onSuccess() {
+      console.log("success");
+      router.push("/Interests");
+    },
+  });
 
   return (
     <>
@@ -84,6 +120,8 @@ const Login = () => {
             >
               {showPassword ? "Hide" : "Show"}
             </button>
+
+            <p className="text-red-500">{error}</p>
           </div>
 
           <button
