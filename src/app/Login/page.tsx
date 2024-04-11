@@ -59,7 +59,14 @@ const Login = () => {
 
     onSuccess() {
       console.log("success");
-      router.push("/Interests");
+      getUserFun({ email });
+    },
+  });
+
+  const { mutate: getUserFun } = trpc.getUser.useMutation({
+    onSuccess(data) {
+      console.log("success");
+      router.push(`/Interests/${data.data.user?.id}`);
     },
   });
 

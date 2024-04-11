@@ -1,7 +1,17 @@
+import {
+  UpdateUserInput,
+  getUser,
+  getUserById,
+  updateUser,
+} from "~/lib/user-schema";
 import authRouter from "~/server/auth.route";
 import { getInterestHandler } from "~/server/interest-controller";
-import { getUserHandler } from "~/server/user-controller";
-import { createContext } from "~/utils/trpc-context";
+import {
+  getUserByIdHandler,
+  getUserHandler,
+  updateUserHandler,
+} from "~/server/user-controller";
+import { Context, createContext } from "~/utils/trpc-context";
 import { protectedProcedure, t } from "~/utils/trpc-server";
 
 const statusCheckRouter = t.router({
@@ -14,7 +24,21 @@ const statusCheckRouter = t.router({
 });
 
 const userRouter = t.router({
-  getUser: protectedProcedure.query(({ ctx }) => getUserHandler({ ctx })),
+  getUser: protectedProcedure
+    .input(getUser)
+    .mutation(({ input }: { input: { email: string } }) =>
+      getUserHandler({ input }),
+    ),
+  getUserById: protectedProcedure
+    .input(getUserById)
+    .mutation(({ input }: { input: { id: string } }) =>
+      getUserByIdHandler({ input }),
+    ),
+  updateUser: protectedProcedure
+    .input(updateUser)
+    .mutation(({ input }: { input: UpdateUserInput }) =>
+      updateUserHandler({ input }),
+    ),
 });
 
 const interestRouter = t.router({

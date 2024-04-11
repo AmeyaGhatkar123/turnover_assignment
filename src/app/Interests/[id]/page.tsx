@@ -1,8 +1,16 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import Header from "../_components/Header";
-import Offers from "../_components/Offers";
+import Header from "../../_components/Header";
+import Offers from "../../_components/Offers";
 import { trpc } from "~/utils/trpc";
+import { useParams, useRouter } from "next/navigation";
+import CheckBox from "~/app/assets/icons/CheckBox";
+import CheckedCheckBox from "~/app/assets/icons/CheckedCheckBox";
+
+interface Interests {
+  id: string;
+  interests?: string[];
+}
 
 const Interests = () => {
   const [interest, setInterest] = useState<any>(null);
@@ -10,14 +18,25 @@ const Interests = () => {
   const [displayPagination, setDisplayPagination] = useState<number[]>([]);
   const [currentSet, setCurrentSet] = useState<number>(0);
   const [pageNumbers, setPageNumbers] = useState<number[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<any>(null);
+  const [userInterests, setUserInterests] = useState<string[]>([]);
+
+  const { id }: { id: string } = useParams();
+
+  const { mutate: getUserFun } = trpc.getUserById.useMutation({
+    onSuccess(data) {
+      setUserInterests(data.data.user?.interests);
+      // console.log("success");
+    },
+  });
 
   const { data: getInterests } = trpc.getInterests.useQuery();
 
   const [currentPage, setCurrentPage] = useState(1);
   const interestsPerPage = 6;
 
-  const getPaginatedInterests = (interestList) => {
-    const indexOfLastInterest = currentPage * interestsPerPage;
+  const getPaginatedInterests = (interestList, page) => {
+    const indexOfLastInterest = page * interestsPerPage;
     const indexOfFirstInterest = indexOfLastInterest - interestsPerPage;
     const currentInterests = interestList?.slice(
       indexOfFirstInterest,
@@ -29,17 +48,17 @@ const Interests = () => {
 
   const nextPage = () => {
     setCurrentPage(currentPage + 1);
-    getPaginatedInterests(getInterests?.data.interests);
+    getPaginatedInterests(getInterests?.data.interests, currentPage + 1);
   };
 
   const prevPage = () => {
     setCurrentPage(currentPage - 1);
-    getPaginatedInterests(getInterests?.data.interests);
+    getPaginatedInterests(getInterests?.data.interests, currentPage - 1);
   };
 
   const goToPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    getPaginatedInterests(getInterests?.data.interests);
+    getPaginatedInterests(getInterests?.data.interests, pageNumber);
   };
 
   const displayPageNumbers = (interestList, newSet: number) => {
@@ -70,11 +89,44 @@ const Interests = () => {
     displayPageNumbers(getInterests?.data.interests, newSet);
   };
 
+  const handleInterestSelection = (event, clickedInterest: any) => {
+    const selectedInterests = userInterests ? userInterests : [];
+
+    const exists = selectedInterests.find((each) => each == clickedInterest.id);
+
+    if (exists) {
+      selectedInterests.splice(
+        selectedInterests.indexOf(clickedInterest.id),
+        1,
+      );
+    } else {
+      selectedInterests.push(clickedInterest.id);
+    }
+    setUserInterests(selectedInterests);
+
+    const temp: Interests = {
+      id: id,
+      interests: selectedInterests,
+    };
+
+    updateFn(temp);
+  };
+
+  const { mutate: updateFn } = trpc.updateUser.useMutation({
+    onSuccess() {
+      // console.log("success");
+    },
+  });
+
   useEffect(() => {
     setInterest(getInterests?.data.interests);
-    getPaginatedInterests(getInterests?.data.interests);
+    getPaginatedInterests(getInterests?.data.interests, 1);
     displayPageNumbers(getInterests?.data.interests, 0);
   }, [getInterests]);
+
+  useEffect(() => {
+    getUserFun({ id });
+  }, []);
 
   return (
     <div>
@@ -94,13 +146,26 @@ const Interests = () => {
             </h2>
 
             {displayInterests &&
-              displayInterests.map((eachInterest) => (
+              displayInterests.map((eachInterest: any) => (
                 <div key={eachInterest.id} className="flex p-2">
                   <input
-                    className="m-2 h-4 w-4 appearance-none rounded-md border border-gray-300 checked:border-transparent checked:bg-black checked:outline-none"
+                    id={eachInterest.id}
+                    className="appearance-none "
                     type="checkbox"
+                    onChange={(e) => handleInterestSelection(e, eachInterest)}
+                    checked={userInterests?.includes(eachInterest.id)}
                   />
-                  <p className="mt-1.5 text-sm">{eachInterest.interest}</p>
+                  {userInterests?.includes(eachInterest.id) ? (
+                    <label htmlFor={eachInterest.id}>
+                      <CheckedCheckBox />
+                    </label>
+                  ) : (
+                    <label htmlFor={eachInterest.id}>
+                      <CheckBox />
+                    </label>
+                  )}
+
+                  <p className="ml-2 text-sm">{eachInterest.interest}</p>
                 </div>
               ))}
 
