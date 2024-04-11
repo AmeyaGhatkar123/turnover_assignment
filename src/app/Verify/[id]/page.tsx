@@ -63,7 +63,7 @@ const Verify = () => {
             Verify your email
           </h1>
           <p className="py-4 text-center text-sm">
-            Enter the 8 digit code you have received on anu***@gmail.com
+            Enter the 8 digit code 12345678
           </p>
 
           <div className="my-4 ml-5">
