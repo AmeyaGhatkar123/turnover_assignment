@@ -1,8 +1,8 @@
 "use client";
 import React, { useRef, useState } from "react";
-import Header from "../_components/Header";
-import Offers from "../_components/Offers";
-import { useRouter } from "next/navigation";
+import Header from "../../_components/Header";
+import Offers from "../../_components/Offers";
+import { useParams, useRouter } from "next/navigation";
 
 const Verify = () => {
   const [values, setValues] = useState<string[]>([
@@ -18,6 +18,7 @@ const Verify = () => {
   const [error, setError] = useState<string>("");
 
   const router = useRouter();
+  const { id } = useParams();
 
   const inputRefs = Array.from({ length: 8 }, () =>
     useRef<HTMLInputElement>(null),
@@ -36,12 +37,16 @@ const Verify = () => {
       if (index < 7 && inputRefs[index + 1]?.current) {
         inputRefs[index + 1]?.current?.focus();
       }
+    } else {
+      const newValues = [...values];
+      newValues[index] = "";
+      setValues(newValues);
     }
   };
 
   const handleVerify = () => {
     if (values.join("") === "12345678") {
-      router.push("/Interests");
+      router.push(`/Interests/${id}`);
     } else {
       setError("Incorrect OTP use 12345678");
     }

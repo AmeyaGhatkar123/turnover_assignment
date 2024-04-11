@@ -46,7 +46,8 @@ const Login = () => {
     },
 
     onSuccess() {
-      router.push("/Verify");
+      const data = { email, password };
+      loginFn(data);
     },
   });
 
@@ -65,7 +66,11 @@ const Login = () => {
 
   const { mutate: getUserFun } = trpc.getUser.useMutation({
     onSuccess(data: any) {
-      router.push(`/Interests/${data.data.user?.id}`);
+      if (isSignUp) {
+        router.push(`/Verify/${data.data.user?.id}`);
+      } else {
+        router.push(`/Interests/${data.data.user?.id}`);
+      }
     },
   });
 
