@@ -5,14 +5,19 @@ import { createAsyncCaller } from "~/app/api/trpc/trpc-router";
 
 export const getAuthUser = async ({
   shouldRedirect = false,
+  id,
 }: {
   shouldRedirect: boolean;
+  id: string;
 }) => {
   const caller = await createAsyncCaller();
 
   return caller
-    .getUser(undefined)
-    .then((result) => result.data.user)
+    .getUserById({ id })
+    .then((result) => {
+      console.log(result, "user");
+      result.data.user;
+    })
     .catch((e) => {
       if (e.code === "UNAUTHORIZED" && shouldRedirect) {
         redirect("/Login");

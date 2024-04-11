@@ -1,8 +1,19 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import Cart from "../assets/icons/Cart";
 import Search from "../assets/icons/Search";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
+  let token;
+  const router = useRouter();
+
+  useEffect(() => {
+    token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/Login");
+    }
+  }, []);
+
   return (
     <div className="mx-7">
       <div className="flex justify-end">

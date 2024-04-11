@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import Header from "../../_components/Header";
 import Offers from "../../_components/Offers";
 import { trpc } from "~/utils/trpc";
@@ -134,6 +134,12 @@ const Interests = () => {
 
   useEffect(() => {
     getUserFun({ id });
+  }, [id]);
+
+  useEffect(() => {
+    return () => {
+      localStorage.removeItem("token");
+    };
   }, []);
 
   return (
@@ -234,4 +240,4 @@ const Interests = () => {
   );
 };
 
-export default Interests;
+export default memo(Interests);

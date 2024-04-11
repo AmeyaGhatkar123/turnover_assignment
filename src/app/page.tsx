@@ -1,6 +1,7 @@
 "use client";
+import { useRouter } from "next/navigation";
 import Login from "./Login/page";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // export function main() {
 //   Array.from({ length: 100 }).map(async (_, i) => {
@@ -15,6 +16,19 @@ import { useState } from "react";
 
 export default function Home() {
   const [isAuthorised, setIsAuthorised] = useState(false);
+
+  const router = useRouter();
+
+  let token;
+
+  useEffect(() => {
+    token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/Login");
+    } else {
+      setIsAuthorised(true);
+    }
+  }, []);
 
   return <div>{isAuthorised ? <></> : <Login />}</div>;
 }

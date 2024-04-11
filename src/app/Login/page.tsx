@@ -1,3 +1,4 @@
+"use client";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Header from "../_components/Header";
@@ -56,7 +57,8 @@ const Login = () => {
       setPassword("");
     },
 
-    onSuccess() {
+    onSuccess(data: any) {
+      localStorage.setItem("token", data.token);
       getUserFun({ email });
     },
   });
@@ -68,7 +70,7 @@ const Login = () => {
   });
 
   return (
-    <>
+    <div>
       <Header />
       <Offers />
       <div className="mb-20 flex justify-center">
@@ -160,7 +162,7 @@ const Login = () => {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
