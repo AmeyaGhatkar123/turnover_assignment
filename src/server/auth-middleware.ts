@@ -21,7 +21,7 @@ export const deserializeUser = async () => {
       return notAuthenticated;
     }
 
-    const secret = process.env.JWT_SECRET;
+    const secret = process.env.JWT_SECRET || "defaultSecret";
     const decoded = jwt.verify(token, secret) as { sub: string };
 
     if (!decoded) {
