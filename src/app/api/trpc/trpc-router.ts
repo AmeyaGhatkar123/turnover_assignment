@@ -1,9 +1,5 @@
-import {
-  UpdateUserInput,
-  getUser,
-  getUserById,
-  updateUser,
-} from "~/lib/user-schema";
+import { getUser, getUserById, updateUser } from "~/lib/user-schema";
+import type { UpdateUserInput } from "~/lib/user-schema";
 import authRouter from "~/server/auth.route";
 import { getInterestHandler } from "~/server/interest-controller";
 import {

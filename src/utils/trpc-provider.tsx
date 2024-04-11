@@ -20,7 +20,7 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
         loggerLink({
           enabled: () => true,
         }),
-        httpBatchLink({
+        httpBatchLink<any>({
           url,
           fetch: async (input, init?) => {
             const fetch = getFetch();
@@ -31,7 +31,7 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         }),
       ],
-      transformer: superjson,
+      transformer: superjson as any,
     }),
   );
 
