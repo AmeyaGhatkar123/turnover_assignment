@@ -37,7 +37,7 @@ const Login = () => {
   };
 
   const { mutate: registerFn } = trpc.registerUser.useMutation({
-    onError(error) {
+    onError(error: any) {
       setError(error.message);
       setName("");
       setEmail("");
@@ -45,27 +45,24 @@ const Login = () => {
     },
 
     onSuccess() {
-      console.log("success");
       router.push("/Verify");
     },
   });
 
   const { mutate: loginFn } = trpc.loginUser.useMutation({
-    onError(error) {
+    onError(error: any) {
       setError(error.message);
       setEmail("");
       setPassword("");
     },
 
     onSuccess() {
-      console.log("success");
       getUserFun({ email });
     },
   });
 
   const { mutate: getUserFun } = trpc.getUser.useMutation({
-    onSuccess(data) {
-      console.log("success");
+    onSuccess(data: any) {
       router.push(`/Interests/${data.data.user?.id}`);
     },
   });

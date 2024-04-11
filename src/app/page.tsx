@@ -1,6 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
-
 import Login from "./Login/page";
 import { useState } from "react";
 
@@ -17,8 +15,6 @@ import { useState } from "react";
 
 export default function Home() {
   const [isAuthorised, setIsAuthorised] = useState(false);
-
-  const router = useRouter();
 
   return <div>{isAuthorised ? <></> : <Login />}</div>;
 }

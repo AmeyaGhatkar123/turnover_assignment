@@ -1,9 +1,9 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../../_components/Header";
 import Offers from "../../_components/Offers";
 import { trpc } from "~/utils/trpc";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import CheckBox from "~/app/assets/icons/CheckBox";
 import CheckedCheckBox from "~/app/assets/icons/CheckedCheckBox";
 
@@ -34,9 +34,8 @@ const Interests = () => {
   const { id }: { id: string } = useParams();
 
   const { mutate: getUserFun } = trpc.getUserById.useMutation<UserPayload>({
-    onSuccess(data) {
+    onSuccess(data: any) {
       if (data.data.user) setUserInterests(data.data.user.interests);
-      // console.log("success");
     },
   });
 
@@ -125,11 +124,7 @@ const Interests = () => {
     updateFn(temp);
   };
 
-  const { mutate: updateFn } = trpc.updateUser.useMutation({
-    onSuccess() {
-      // console.log("success");
-    },
-  });
+  const { mutate: updateFn } = trpc.updateUser.useMutation();
 
   useEffect(() => {
     setInterest(getInterests?.data.interests ?? []);

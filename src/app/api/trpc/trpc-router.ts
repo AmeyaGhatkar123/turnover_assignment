@@ -11,7 +11,7 @@ import {
   getUserHandler,
   updateUserHandler,
 } from "~/server/user-controller";
-import { Context, createContext } from "~/utils/trpc-context";
+import { createContext } from "~/utils/trpc-context";
 import { protectedProcedure, t } from "~/utils/trpc-server";
 
 const statusCheckRouter = t.router({
