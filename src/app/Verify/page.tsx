@@ -5,8 +5,17 @@ import Offers from "../_components/Offers";
 import { useRouter } from "next/navigation";
 
 const Verify = () => {
-  const [values, setValues] = useState(["", "", "", "", "", "", "", ""]);
-  const [error, setError] = useState("");
+  const [values, setValues] = useState<string[]>([
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+  ]);
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
 

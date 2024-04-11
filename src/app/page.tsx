@@ -1,18 +1,8 @@
 "use client";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { api } from "~/trpc/server";
-import Header from "./_components/Header";
-import Offers from "./_components/Offers";
 import Login from "./Login/page";
-import { GET } from "./api/trpc/[trpc]/route";
-
-import { useEffect, useState } from "react";
-import { trpc } from "~/utils/trpc";
-
-import { faker } from "@faker-js/faker";
-import { prisma } from "../lib/prisma";
+import { useState } from "react";
 
 // export function main() {
 //   Array.from({ length: 100 }).map(async (_, i) => {
@@ -24,11 +14,6 @@ import { prisma } from "../lib/prisma";
 //     });
 //   });
 // }
-
-interface Interests {
-  id: string;
-  interest: string;
-}
 
 export default function Home() {
   const [isAuthorised, setIsAuthorised] = useState(false);

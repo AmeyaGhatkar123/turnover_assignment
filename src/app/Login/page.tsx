@@ -5,15 +5,15 @@ import Offers from "../_components/Offers";
 import { trpc } from "~/utils/trpc";
 
 const Login = () => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [inputType, setInputType] = useState("password");
+  const [isSignUp, setIsSignUp] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [inputType, setInputType] = useState<string>("password");
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
 
   const router = useRouter();
 

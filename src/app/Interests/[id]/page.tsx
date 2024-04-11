@@ -7,25 +7,35 @@ import { useParams, useRouter } from "next/navigation";
 import CheckBox from "~/app/assets/icons/CheckBox";
 import CheckedCheckBox from "~/app/assets/icons/CheckedCheckBox";
 
-interface Interests {
+interface InterestsPayload {
   id: string;
   interests?: string[];
 }
 
+interface UserPayload {
+  id: string;
+}
+
+interface Interests {
+  id: string;
+  interest: string;
+}
+
 const Interests = () => {
-  const [interest, setInterest] = useState<any>(null);
-  const [displayInterests, setDisplayInterests] = useState<any>(null);
+  const [interest, setInterest] = useState<Interests[] | null>(null);
+  const [displayInterests, setDisplayInterests] = useState<Interests[] | null>(
+    null,
+  );
   const [displayPagination, setDisplayPagination] = useState<number[]>([]);
   const [currentSet, setCurrentSet] = useState<number>(0);
   const [pageNumbers, setPageNumbers] = useState<number[]>([]);
-  const [selectedInterests, setSelectedInterests] = useState<any>(null);
   const [userInterests, setUserInterests] = useState<string[]>([]);
 
   const { id }: { id: string } = useParams();
 
-  const { mutate: getUserFun } = trpc.getUserById.useMutation({
+  const { mutate: getUserFun } = trpc.getUserById.useMutation<UserPayload>({
     onSuccess(data) {
-      setUserInterests(data.data.user?.interests);
+      if (data.data.user) setUserInterests(data.data.user.interests);
       // console.log("success");
     },
   });
@@ -35,7 +45,7 @@ const Interests = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const interestsPerPage = 6;
 
-  const getPaginatedInterests = (interestList, page) => {
+  const getPaginatedInterests = (interestList: Interests[], page: number) => {
     const indexOfLastInterest = page * interestsPerPage;
     const indexOfFirstInterest = indexOfLastInterest - interestsPerPage;
     const currentInterests = interestList?.slice(
@@ -48,20 +58,20 @@ const Interests = () => {
 
   const nextPage = () => {
     setCurrentPage(currentPage + 1);
-    getPaginatedInterests(getInterests?.data.interests, currentPage + 1);
+    getPaginatedInterests(getInterests?.data.interests ?? [], currentPage + 1);
   };
 
   const prevPage = () => {
     setCurrentPage(currentPage - 1);
-    getPaginatedInterests(getInterests?.data.interests, currentPage - 1);
+    getPaginatedInterests(getInterests?.data.interests ?? [], currentPage - 1);
   };
 
   const goToPage = (pageNumber: number) => {
     setCurrentPage(pageNumber);
-    getPaginatedInterests(getInterests?.data.interests, pageNumber);
+    getPaginatedInterests(getInterests?.data.interests ?? [], pageNumber);
   };
 
-  const displayPageNumbers = (interestList, newSet: number) => {
+  const displayPageNumbers = (interestList: Interests[], newSet: number) => {
     const tempArray = [];
     for (
       let i = 1;
@@ -80,16 +90,19 @@ const Interests = () => {
   const prevSet = () => {
     setCurrentSet(currentSet - 1);
     const newSet = currentSet - 1;
-    displayPageNumbers(getInterests?.data.interests, newSet);
+    displayPageNumbers(getInterests?.data.interests ?? [], newSet);
   };
 
   const nextSet = () => {
     setCurrentSet(currentSet + 1);
     const newSet = currentSet + 1;
-    displayPageNumbers(getInterests?.data.interests, newSet);
+    displayPageNumbers(getInterests?.data.interests ?? [], newSet);
   };
 
-  const handleInterestSelection = (event, clickedInterest: any) => {
+  const handleInterestSelection = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    clickedInterest: any,
+  ) => {
     const selectedInterests = userInterests ? userInterests : [];
 
     const exists = selectedInterests.find((each) => each == clickedInterest.id);
@@ -104,7 +117,7 @@ const Interests = () => {
     }
     setUserInterests(selectedInterests);
 
-    const temp: Interests = {
+    const temp: InterestsPayload = {
       id: id,
       interests: selectedInterests,
     };
@@ -119,9 +132,9 @@ const Interests = () => {
   });
 
   useEffect(() => {
-    setInterest(getInterests?.data.interests);
-    getPaginatedInterests(getInterests?.data.interests, 1);
-    displayPageNumbers(getInterests?.data.interests, 0);
+    setInterest(getInterests?.data.interests ?? []);
+    getPaginatedInterests(getInterests?.data.interests ?? [], 1);
+    displayPageNumbers(getInterests?.data.interests ?? [], 0);
   }, [getInterests]);
 
   useEffect(() => {
@@ -203,7 +216,7 @@ const Interests = () => {
                   onClick={nextPage}
                   disabled={
                     currentPage ===
-                    Math.ceil(interest?.length / interestsPerPage)
+                    Math.ceil((interest?.length ?? 0) / interestsPerPage)
                   }
                 >
                   {">"}
